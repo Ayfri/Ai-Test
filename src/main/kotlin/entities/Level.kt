@@ -12,7 +12,8 @@ class Level {
 
 	fun draw() {
 		flag.draw()
-		players.forEach(Player::draw)
+		players.drop(1).forEach(Player::draw)
+		players.first().draw()
 	}
 
 	fun update() {

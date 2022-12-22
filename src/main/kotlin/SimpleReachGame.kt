@@ -31,7 +31,7 @@ class SimpleReachGame : PApplet() {
 
 		level.generateRandomWalls(60)
 		level.setFlag()
-		level.setPlayers(800)
+		level.setPlayers(200)
 	}
 
 	fun text(text: String, column: Int) = text(text, 15f, 30f * column + 1)
@@ -42,7 +42,7 @@ class SimpleReachGame : PApplet() {
 		level.walls.forEach(Wall::draw)
 
 		if (level.population.isFinished) {
-			generation()
+			changeGeneration()
 		} else {
 			level.draw()
 			level.update()
@@ -63,17 +63,18 @@ class SimpleReachGame : PApplet() {
 		text("Min steps: ${level.population.minSteps}", 5)
 		text("Generation: ${level.population.generation}", 6)
 		text("Population: ${level.players.size}", 7)
-//		text("Fitness sum: ${level.population.fitnessSum}", 8)
-		text("Mutation rate: ${Brain.mutationRate}", 8)
+		text("Fitness sum: ${level.population.fitnessSum}", 8)
+		text("Mutation rate: ${Brain.mutationRate}", 9)
+
+		hoverPlayer = level.players.firstOrNull { it.isBest }
 
 		hoverPlayer?.let {
-			text("Fitness: ${it.fitness}", 10)
-			text("Velocity: ${it.velocity}", 11)
-			text("Position: ${it.pos}", 12)
+			text("Velocity: ${it.velocity}", 12)
+			text("Position: ${it.pos}", 13)
 		}
 	}
 
-	private fun generation() {
+	private fun changeGeneration() {
 		level.population.calculateFitness()
 		level.population.naturalSelection()
 		level.population.mutatePlayers()

@@ -3,23 +3,25 @@ package entities
 import p
 
 class Population(val level: Level, val players: MutableList<Player> = mutableListOf()) {
-	val fitnessSum get() = players.sumOf { it.fitness }.toFloat()
 	val isFinished get() = players.any { it.hasReachedGoal || it.brain.step == it.brain.directions.size }
-
-	var generation = 0
 	var minSteps = Brain.STARTING_STEPS
+	var bestPlayerIndex = 0
+	var fitnessSum = 0f
+	var generation = 0
+
+	fun calculateFitnessSum() = players.sumOf { it.fitness }.toFloat().also { fitnessSum = it }
 
 	fun getBestPlayer(): Player {
 		val player = players.maxBy(Player::fitness)
+		bestPlayerIndex = players.indexOf(player)
 		if (player.hasReachedGoal && player.brain.step < minSteps) minSteps = player.brain.step
 		return player
 	}
 
 	fun naturalSelection() {
 		val newPlayers = ArrayList<Player>(players.size)
-		calculateFitness()
-
-		newPlayers.add(getBestPlayer().createBaby())
+		calculateFitnessSum()
+		newPlayers += getBestPlayer().createBaby().also { it.isBest = true }
 
 		for (i in 1 until players.size) {
 			val parent = selectParent()

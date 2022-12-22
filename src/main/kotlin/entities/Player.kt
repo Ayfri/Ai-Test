@@ -2,8 +2,6 @@ package entities
 
 import collisions
 import p
-import processing.core.PConstants
-import processing.core.PShape
 import processing.core.PVector
 import kotlin.math.round
 
@@ -29,18 +27,34 @@ data class Circle(val pos: PVector, val radius: Float) {
 
 data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Brain()) {
 	val velocity = PVector(0f, 0f)
-	val zone = Circle(pos, RADIUS)
+
+	// I'm bad at maths, so zones are broken for now.
+	// val zone = Circle(pos, RADIUS)
 	var fitness = 0.0
 	var hasReachedGoal = false
-	val pShape: PShape = p.createShape(PConstants.ELLIPSE, 0f, 0f, DIAMETER, DIAMETER)
+	var isBest = false
 
 	fun draw() {
-		if (hasReachedGoal) p.fill(0f, 255f, 0f)
-		else p.fill(0f)
-
 		p.pushMatrix()
+		when {
+			hasReachedGoal -> {
+				p.strokeWeight(5f)
+				p.stroke(0f, 255f, 0f)
+			}
+
+			isBest -> {
+				p.strokeWeight(12f)
+				p.stroke(0f, 128f, 255f)
+			}
+
+			else -> {
+				p.strokeWeight(5f)
+				p.stroke(0f)
+			}
+		}
+
+
 		p.translate(pos.x, pos.y)
-		p.strokeWeight(5f)
 		p.point(0f, 0f)
 		p.strokeWeight(1f)
 		p.popMatrix()
