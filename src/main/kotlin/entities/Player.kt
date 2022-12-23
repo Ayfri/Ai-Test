@@ -43,7 +43,7 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 			}
 
 			isBest -> {
-				p.strokeWeight(12f)
+				p.strokeWeight(8f)
 				p.stroke(0f, 128f, 255f)
 			}
 
@@ -53,10 +53,10 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 			}
 		}
 
-
 		p.translate(pos.x, pos.y)
 		p.point(0f, 0f)
-		p.strokeWeight(1f)
+		p.strokeWeight(0.75f)
+		p.stroke(0f)
 		p.popMatrix()
 	}
 
