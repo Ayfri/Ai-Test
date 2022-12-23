@@ -37,11 +37,6 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 	fun draw() {
 		p.pushMatrix()
 		when {
-			hasReachedGoal -> {
-				p.strokeWeight(5f)
-				p.stroke(0f, 255f, 0f)
-			}
-
 			isBest -> {
 				p.strokeWeight(8f)
 				p.stroke(0f, 128f, 255f)
