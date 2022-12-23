@@ -45,7 +45,7 @@ class Population(val level: Level, val players: MutableList<Player> = mutableLis
 
 	fun calculateFitness() = players.forEach { it.calculateFitness(level) }
 
-	fun mutatePlayers() = players.forEach { it.brain.mutate() }
+	fun mutatePlayers() = players.subList(1, players.size).forEach { it.brain.mutate() }
 
 	fun reset() {
 		generation = 0
