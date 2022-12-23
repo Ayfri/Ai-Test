@@ -9,10 +9,11 @@ class Level {
 	val flag = Flag(PVector())
 	val players = mutableListOf<Player>()
 	val population = Population(this, players)
+	var onlyDisplayBest = false
 
 	fun draw() {
 		flag.draw()
-		players.drop(1).forEach(Player::draw)
+		if (!onlyDisplayBest) players.drop(1).forEach(Player::draw)
 		players.first().draw()
 	}
 

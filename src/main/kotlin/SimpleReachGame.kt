@@ -101,6 +101,10 @@ class SimpleReachGame : PApplet() {
 				setFlag()
 				setPlayers(1200)
 			}
+
+			'd' -> {
+				level.onlyDisplayBest = !level.onlyDisplayBest
+			}
 		}
 
 		when (keyCode) {
