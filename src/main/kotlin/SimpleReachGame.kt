@@ -31,7 +31,7 @@ class SimpleReachGame : PApplet() {
 
 		level.generateRandomWalls(60)
 		level.setFlag()
-		level.setPlayers(500)
+		level.setPlayers()
 	}
 
 	fun text(text: String, column: Int) = text(text, 15f, 30f * column + 1)
@@ -99,7 +99,7 @@ class SimpleReachGame : PApplet() {
 			'r' -> level = Level().apply {
 				generateRandomWalls(60)
 				setFlag()
-				setPlayers(1200)
+				setPlayers()
 			}
 
 			'd' -> {

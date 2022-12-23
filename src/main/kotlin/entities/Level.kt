@@ -9,6 +9,7 @@ class Level {
 	val flag = Flag(PVector())
 	val players = mutableListOf<Player>()
 	val population = Population(this, players)
+	val populationSize = 1000
 	var onlyDisplayBest = false
 
 	fun draw() {
@@ -37,15 +38,15 @@ class Level {
 		flag.pos.y = 10f
 	}
 
-	fun setPlayers(count: Int) {
+	fun setPlayers() {
 		players.clear()
-		for (i in 0 until count) {
+		for (i in 0 until populationSize) {
 			players += Player()
 		}
 	}
 
 	fun reset() {
-		setPlayers(players.size)
+		setPlayers()
 		population.reset()
 	}
 }
