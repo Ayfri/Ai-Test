@@ -22,7 +22,7 @@ class Brain(steps: Int = STARTING_STEPS) {
 	override fun toString() = "Brain(directions=$directions, step=$step)"
 
 	companion object {
-		const val STARTING_STEPS = 3000
+		const val STARTING_STEPS = 5000
 		var mutationRate = 0.05f
 			set(value) {
 				if (value < 0 || value > 1) return
