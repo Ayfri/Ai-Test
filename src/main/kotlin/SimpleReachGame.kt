@@ -31,7 +31,7 @@ class SimpleReachGame : PApplet() {
 
 		level.generateRandomWalls(60)
 		level.setFlag()
-		level.setPlayers(200)
+		level.setPlayers(500)
 	}
 
 	fun text(text: String, column: Int) = text(text, 15f, 30f * column + 1)
@@ -64,7 +64,7 @@ class SimpleReachGame : PApplet() {
 		text("Generation: ${level.population.generation}", 6)
 		text("Population: ${level.players.size}", 7)
 		text("Fitness sum: ${level.population.fitnessSum}", 8)
-		text("Mutation rate: ${Brain.mutationRate}", 9)
+		text("Mutation rate: ${(Brain.mutationRate * 100).roundToDecimalPlaces(2)}%", 9)
 
 		hoverPlayer = level.players.firstOrNull { it.isBest }
 
@@ -104,8 +104,8 @@ class SimpleReachGame : PApplet() {
 		}
 
 		when (keyCode) {
-			UP -> Brain.mutationRate += .005f
-			DOWN -> Brain.mutationRate -= .005f
+			UP -> Brain.mutationRate += .0025f
+			DOWN -> Brain.mutationRate -= .0025f
 		}
 	}
 }

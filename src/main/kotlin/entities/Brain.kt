@@ -24,5 +24,9 @@ class Brain(steps: Int = STARTING_STEPS) {
 	companion object {
 		const val STARTING_STEPS = 3000
 		var mutationRate = 0.05f
+			set(value) {
+				if (value < 0 || value > 1) return
+				field = value
+			}
 	}
 }
