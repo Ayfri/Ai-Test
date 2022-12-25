@@ -6,6 +6,7 @@ import processing.core.PApplet
 import processing.core.PVector
 
 val collisions = mutableSetOf<PVector>()
+val line = mutableSetOf<PVector>()
 
 class SimpleReachGame : PApplet() {
 	private var movingFlag = false
@@ -48,11 +49,20 @@ class SimpleReachGame : PApplet() {
 			level.update()
 		}
 		/*collisions.forEach { collision ->
-			fill(255f, 0f, 0f)
-			strokeWeight(0f)
-			circle(collision.x, collision.y, 2f)
+			stroke(255f, 0f, 0f)
+			point(collision.x, collision.y)
 			strokeWeight(1f)
 		}*/
+		beginShape()
+		noFill()
+		stroke(0f, 0f, 255f)
+		strokeWeight(2f)
+		line.forEach { point ->
+			curveVertex(point.x, point.y)
+		}
+		endShape()
+		strokeWeight(.75f)
+		stroke(0f)
 
 		fill(0f)
 		textSize(22f)
@@ -66,8 +76,6 @@ class SimpleReachGame : PApplet() {
 		text("Fitness sum: ${level.population.fitnessSum}", 8)
 		text("Mutation rate: ${(Brain.mutationRate * 100).roundToDecimalPlaces(2)}%", 9)
 
-		hoverPlayer = level.players.firstOrNull { it.isBest }
-
 		hoverPlayer?.let {
 			text("Velocity: ${it.velocity}", 12)
 			text("Position: ${it.pos}", 13)
@@ -79,6 +87,7 @@ class SimpleReachGame : PApplet() {
 		level.population.naturalSelection()
 		level.population.mutatePlayers()
 		collisions.clear()
+		line.clear()
 	}
 
 	override fun mouseMoved() {
@@ -93,6 +102,7 @@ class SimpleReachGame : PApplet() {
 				movingFlag = true
 				level.flag.pos = PVector(mouseX.toFloat(), mouseY.toFloat())
 				level.reset()
+				line.clear()
 				movingFlag = false
 			}
 

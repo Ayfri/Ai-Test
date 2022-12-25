@@ -1,6 +1,7 @@
 package entities
 
 import collisions
+import line
 import p
 import processing.core.PVector
 import kotlin.math.round
@@ -40,6 +41,7 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 			isBest -> {
 				p.strokeWeight(8f)
 				p.stroke(0f, 128f, 255f)
+				line += pos.copy()
 			}
 
 			else -> {
