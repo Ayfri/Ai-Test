@@ -14,7 +14,7 @@ class Brain(steps: Int = STARTING_STEPS) {
 	}
 
 	fun mutate() {
-		for (i in 0 until directions.size) {
+		for (i in directions.indices) {
 			if (p.random(1f) < mutationRate) directions[i] = PVector.random2D()
 		}
 	}

@@ -24,7 +24,7 @@ class Level {
 
 	fun generateRandomWalls(count: Int) {
 		walls.clear()
-		for (i in 0 until count) {
+		for (i in 0 .. count) {
 			val x = p.random(p.width.toFloat())
 			val y = p.random(p.height.toFloat())
 			val width = p.random(Wall.widthRange.start, Wall.widthRange.endInclusive)
