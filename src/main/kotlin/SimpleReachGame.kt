@@ -1,9 +1,14 @@
+
 import entities.Brain
 import entities.Level
 import entities.Player
 import entities.Wall
 import processing.core.PApplet
 import processing.core.PVector
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 val collisions = mutableSetOf<PVector>()
 val line = mutableSetOf<PVector>()
@@ -11,15 +16,19 @@ val line = mutableSetOf<PVector>()
 class SimpleReachGame : PApplet() {
 	private var movingFlag = false
 	var level = Level()
+
+	@Volatile
 	var speed = 10f
 		set(value) {
 			if (value <= 0) return
-
 			field = value
-			frameRate(60 * speed)
+			deleteUpdate()
+			setupUpdate()
 		}
 
 	var hoverPlayer: Player? = null
+
+	lateinit var executor: ScheduledExecutorService
 
 	override fun settings() {
 		size(1600, 900)
@@ -33,6 +42,21 @@ class SimpleReachGame : PApplet() {
 		level.generateRandomWalls(60)
 		level.setFlag()
 		level.setPlayers()
+		setupUpdate()
+	}
+
+	private fun setupUpdate(): ScheduledFuture<*>? {
+		executor = Executors.newSingleThreadScheduledExecutor()
+
+		return executor.scheduleAtFixedRate({
+			level.update()
+		}, 0, (1000 / 30 / speed).toLong(), TimeUnit.MILLISECONDS)
+	}
+
+	private fun deleteUpdate() {
+		executor.shutdown()
+		executor.awaitTermination(1, TimeUnit.SECONDS)
+		while (!executor.isTerminated) delay(1)
 	}
 
 	fun text(text: String, column: Int) = text(text, 15f, 30f * column + 1)
@@ -43,10 +67,11 @@ class SimpleReachGame : PApplet() {
 		level.walls.forEach(Wall::draw)
 
 		if (level.population.isFinished) {
+			deleteUpdate()
 			changeGeneration()
+			setupUpdate()
 		} else {
 			level.draw()
-			level.update()
 		}
 		/*collisions.forEach { collision ->
 			stroke(255f, 0f, 0f)
@@ -96,13 +121,15 @@ class SimpleReachGame : PApplet() {
 
 	override fun keyPressed() {
 		when (key) {
-			'+' -> speed += .1f
-			'-' -> speed -= .1f
+			'+' -> speed += .25f
+			'-' -> speed -= .25f
 			'f' -> {
 				movingFlag = true
+				deleteUpdate()
 				level.flag.pos = PVector(mouseX.toFloat(), mouseY.toFloat())
 				level.reset()
 				line.clear()
+				setupUpdate()
 				movingFlag = false
 			}
 
