@@ -9,6 +9,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 val collisions = mutableSetOf<PVector>()
 val line = mutableSetOf<PVector>()
@@ -36,7 +37,7 @@ class SimpleReachGame : PApplet() {
 
 	override fun setup() {
 		background(255f)
-		frameRate(60 * speed)
+		frameRate(60f)
 		p = this
 
 		level.generateRandomWalls(60)
@@ -50,7 +51,7 @@ class SimpleReachGame : PApplet() {
 
 		return executor.scheduleAtFixedRate({
 			level.update()
-		}, 0, (1000 / 30 / speed).toLong(), TimeUnit.MILLISECONDS)
+		}, 0, max((1000 / 30 / speed).toLong(), 1), TimeUnit.MILLISECONDS)
 	}
 
 	private fun deleteUpdate() {
