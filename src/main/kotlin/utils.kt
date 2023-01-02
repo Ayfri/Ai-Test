@@ -1,6 +1,10 @@
 import processing.core.PApplet
+import processing.core.PVector
 import kotlin.math.pow
 import kotlin.math.roundToInt
+
+operator fun PVector.component1() = x
+operator fun PVector.component2() = y
 
 val Number.radians: Float
 	get() = PApplet.radians(this.toFloat())

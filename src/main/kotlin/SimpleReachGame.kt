@@ -68,6 +68,7 @@ class SimpleReachGame : PApplet() {
 		level.walls.forEach(Wall::draw)
 
 		if (level.population.isFinished) {
+			level.draw()
 			deleteUpdate()
 			changeGeneration()
 			setupUpdate()
@@ -83,9 +84,7 @@ class SimpleReachGame : PApplet() {
 		noFill()
 		stroke(0f, 0f, 255f)
 		strokeWeight(2f)
-		line.forEach { point ->
-			curveVertex(point.x, point.y)
-		}
+		line.forEach { (x, y) -> curveVertex(x, y) }
 		endShape()
 		strokeWeight(.75f)
 		stroke(0f)
