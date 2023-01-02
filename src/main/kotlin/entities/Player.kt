@@ -99,13 +99,12 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 			pos.sub(velocity)
 
 			when {
-				velocity.x > 0 -> velocity.x = 0f
-				velocity.x < 0 -> velocity.x = 0f
-				velocity.y > 0 -> velocity.y = 0f
-				velocity.y < 0 -> velocity.y = 0f
+				pos.x + velocity.x < wall.zone.left -> velocity.x = 0f
+				pos.x + velocity.x > wall.zone.right -> velocity.x = 0f
+				pos.y + velocity.y < wall.zone.top -> velocity.y = 0f
+				pos.y + velocity.y > wall.zone.bottom -> velocity.y = 0f
 			}
 		}
-
 
 		if (pos in level.flag) hasReachedGoal = true
 	}
