@@ -5,9 +5,8 @@ import entities.Player
 import entities.Wall
 import processing.core.PApplet
 import processing.core.PVector
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 
@@ -19,7 +18,7 @@ class SimpleReachGame : PApplet() {
 	var level = Level()
 
 	@Volatile
-	var speed = 10f
+	var speed = .00002f
 		set(value) {
 			if (value <= 0) return
 			field = value
@@ -29,7 +28,7 @@ class SimpleReachGame : PApplet() {
 
 	var hoverPlayer: Player? = null
 
-	lateinit var executor: ScheduledExecutorService
+	lateinit var executor: ExecutorService
 
 	override fun settings() {
 		size(1600, 900)
@@ -46,12 +45,17 @@ class SimpleReachGame : PApplet() {
 		setupUpdate()
 	}
 
-	private fun setupUpdate(): ScheduledFuture<*>? {
-		executor = Executors.newSingleThreadScheduledExecutor()
-
-		return executor.scheduleAtFixedRate({
+	private fun setupUpdate() = if (speed < 30) Executors.newSingleThreadScheduledExecutor().let {
+		it.scheduleAtFixedRate({
 			level.update()
-		}, 0, max((1000 / 30 / speed).toLong(), 1), TimeUnit.MILLISECONDS)
+		}, 0, max((1000 / 60 / speed).toLong(), 1), TimeUnit.NANOSECONDS)
+		executor = it
+	} else Executors.newSingleThreadScheduledExecutor().let {
+		it.scheduleAtFixedRate({
+			level.update()
+		}, 0, 1, TimeUnit.NANOSECONDS)
+
+		executor = it
 	}
 
 	private fun deleteUpdate() {
