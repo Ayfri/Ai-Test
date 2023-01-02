@@ -137,6 +137,7 @@ class SimpleReachGame : PApplet() {
 				generateRandomWalls(60)
 				setFlag()
 				setPlayers()
+				line.clear()
 			}
 
 			'd' -> {
