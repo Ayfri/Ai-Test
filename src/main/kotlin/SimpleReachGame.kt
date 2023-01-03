@@ -22,7 +22,7 @@ class SimpleReachGame : PApplet() {
 	var startTime = 0L
 
 	@Volatile
-	var speed = .00002f
+	var speed = 2f
 		set(value) {
 			if (value <= 0) return
 			field = value
@@ -50,10 +50,10 @@ class SimpleReachGame : PApplet() {
 		startTime = System.currentTimeMillis()
 	}
 
-	private fun setupUpdate() = if (speed < 30) Executors.newSingleThreadScheduledExecutor().let {
+	private fun setupUpdate() = if (speed < 20) Executors.newSingleThreadScheduledExecutor().let {
 		it.scheduleAtFixedRate({
 			level.update()
-		}, 0, max((1000 / 60 / speed).toLong(), 1), TimeUnit.NANOSECONDS)
+		}, 0, max((10_000_000 / speed).toLong(), 1), TimeUnit.NANOSECONDS)
 		executor = it
 	} else Executors.newSingleThreadScheduledExecutor().let {
 		it.scheduleAtFixedRate({
