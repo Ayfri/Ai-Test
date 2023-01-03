@@ -1,6 +1,5 @@
 package entities
 
-import p
 import processing.core.PVector
 
 class Brain(steps: Int = STARTING_STEPS) {
@@ -15,7 +14,7 @@ class Brain(steps: Int = STARTING_STEPS) {
 
 	fun mutate() {
 		for (i in directions.indices) {
-			if (p.random(1f) < mutationRate) directions[i] = PVector.random2D()
+			if (Math.random() < mutationRate) directions[i] = PVector.random2D()
 		}
 	}
 
