@@ -1,8 +1,8 @@
 package entities
 
 import p
-import processing.core.PApplet
 import processing.core.PVector
+import java.awt.Color
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -34,6 +34,7 @@ data class Zone(val pos: PVector, val height: Float, val width: Float, val angle
 }
 
 data class Wall(val pos: PVector, val width: Float, val angle: Float) {
+	private val color = Color.HSBtoRGB(p.random(0f, 1f), p.random(0f, 1f), 1f)
 	val zone = Zone(
 		pos = pos,
 		height = HEIGHT,
@@ -42,8 +43,7 @@ data class Wall(val pos: PVector, val width: Float, val angle: Float) {
 	)
 
 	fun draw() {
-		p.fill(0f, 255f, 0f)
-		p.rectMode(PApplet.CORNERS)
+		p.fill(color)
 		p.rect(zone.x1, zone.y1, zone.x2, zone.y2)
 	}
 
