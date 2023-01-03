@@ -26,11 +26,10 @@ data class Zone(val pos: PVector, val height: Float, val width: Float, val angle
 		y2 = y + (cos * halfHeight) + (sin * -halfWidth)
 	}
 
-	val left get() = minOf(x1, x2)
-	val right get() = maxOf(x1, x2)
-	val top get() = minOf(y1, y2)
-	val bottom get() = maxOf(y1, y2)
-	val center get() = PVector(x1 + width / 2f, y1 + height / 2f)
+	val left = minOf(x1, x2)
+	val right = maxOf(x1, x2)
+	val top = minOf(y1, y2)
+	val bottom = maxOf(y1, y2)
 }
 
 data class Wall(val pos: PVector, val width: Float, val angle: Float) {
