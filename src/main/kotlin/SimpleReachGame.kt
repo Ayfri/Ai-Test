@@ -42,6 +42,8 @@ class SimpleReachGame : PApplet() {
 		background(255f)
 		frameRate(60f)
 		p = this
+		rectMode(CORNERS)
+		ellipseMode(RADIUS)
 
 		level.generateRandomWalls(60)
 		level.setFlag()

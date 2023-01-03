@@ -8,11 +8,8 @@ data class Flag(var pos: PVector) {
 	inline val halfDiameter get() = diameter / 2f
 
 	fun draw() {
-		p.pushMatrix()
-		p.translate(pos.x, pos.y)
 		p.fill(255f, 0f, 0f)
-		p.ellipse(0f, 0f, diameter, diameter)
-		p.popMatrix()
+		p.ellipse(pos.x, pos.y, diameter, diameter)
 	}
 
 	operator fun contains(point: PVector) =

@@ -36,7 +36,7 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 	var isBest = false
 
 	fun draw() {
-		p.pushMatrix()
+		p.push()
 		when {
 			isBest -> {
 				p.strokeWeight(8f)
@@ -50,11 +50,8 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 			}
 		}
 
-		p.translate(pos.x, pos.y)
-		p.point(0f, 0f)
-		p.strokeWeight(0.75f)
-		p.stroke(0f)
-		p.popMatrix()
+		p.point(pos.x, pos.y)
+		p.pop()
 	}
 
 	fun move() {
