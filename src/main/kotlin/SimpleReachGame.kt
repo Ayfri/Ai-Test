@@ -24,7 +24,7 @@ class SimpleReachGame : PApplet() {
 	@Volatile
 	var speed = 2f
 		set(value) {
-			if (value <= 0) return
+			if (value < 0 || value > MAX_SPEED) return
 			field = value
 			deleteUpdate()
 			setupUpdate()
@@ -50,7 +50,7 @@ class SimpleReachGame : PApplet() {
 		startTime = System.currentTimeMillis()
 	}
 
-	private fun setupUpdate() = if (speed < 20) Executors.newSingleThreadScheduledExecutor().let {
+	private fun setupUpdate() = if (speed < MAX_SPEED) Executors.newSingleThreadScheduledExecutor().let {
 		it.scheduleAtFixedRate({
 			level.update()
 		}, 0, max((10_000_000 / speed).toLong(), 1), TimeUnit.NANOSECONDS)
@@ -161,6 +161,10 @@ class SimpleReachGame : PApplet() {
 			UP -> Brain.mutationRate += .0025f
 			DOWN -> Brain.mutationRate -= .0025f
 		}
+	}
+
+	companion object {
+		const val MAX_SPEED = 20f
 	}
 }
 
