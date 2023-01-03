@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
 
 val collisions = mutableSetOf<PVector>()
 val line = mutableSetOf<PVector>()
@@ -16,6 +18,8 @@ val line = mutableSetOf<PVector>()
 class SimpleReachGame : PApplet() {
 	private var movingFlag = false
 	var level = Level()
+	var timing = 10.minutes
+	var startTime = 0L
 
 	@Volatile
 	var speed = .00002f
@@ -43,6 +47,7 @@ class SimpleReachGame : PApplet() {
 		level.setFlag()
 		level.setPlayers()
 		setupUpdate()
+		startTime = System.currentTimeMillis()
 	}
 
 	private fun setupUpdate() = if (speed < 30) Executors.newSingleThreadScheduledExecutor().let {
@@ -99,11 +104,12 @@ class SimpleReachGame : PApplet() {
 		text("Step: ${level.players[0].brain.step}", 1)
 		text("Speed: $speed", 2)
 		text("Framerate: $frameRate", 3)
-		text("Min steps: ${level.population.minSteps}", 5)
-		text("Generation: ${level.population.generation}", 6)
-		text("Population: ${level.players.size}", 7)
-		text("Fitness sum: ${level.population.fitnessSum}", 8)
-		text("Mutation rate: ${(Brain.mutationRate * 100).roundToDecimalPlaces(2)}%", 9)
+		text("Time: ${timing.inWholeMilliseconds}ms", 5)
+		text("Min steps: ${level.population.minSteps}", 6)
+		text("Generation: ${level.population.generation}", 7)
+		text("Population: ${level.players.size}", 8)
+		text("Fitness sum: ${level.population.fitnessSum}", 9)
+		text("Mutation rate: ${(Brain.mutationRate * 100).roundToDecimalPlaces(2)}%", 10)
 
 		hoverPlayer?.let {
 			text("Velocity: ${it.velocity}", 12)
@@ -112,6 +118,8 @@ class SimpleReachGame : PApplet() {
 	}
 
 	private fun changeGeneration() {
+		timing = (System.currentTimeMillis() - startTime).milliseconds
+		startTime = System.currentTimeMillis()
 		level.population.calculateFitness()
 		level.population.naturalSelection()
 		level.population.mutatePlayers()
