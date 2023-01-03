@@ -9,7 +9,7 @@ class Level {
 	val flag = Flag(PVector())
 	val players = mutableListOf<Player>()
 	val population = Population(this, players)
-	val populationSize = 1000
+	val populationSize = 400
 	var onlyDisplayBest = false
 
 	fun draw() {
