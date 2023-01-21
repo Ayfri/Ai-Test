@@ -5,7 +5,7 @@ import p
 class Population(val level: Level) {
 	val isFinished get() = players.any { it.hasReachedGoal || it.brain.step == it.brain.directions.size }
 	val players = mutableListOf<Player>()
-	val populationSize = 400
+	val populationSize = 500
 	var minSteps = Brain.STARTING_STEPS
 	var bestPlayerIndex = 0
 	var fitnessSum = 0f

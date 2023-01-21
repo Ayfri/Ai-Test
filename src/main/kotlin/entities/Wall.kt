@@ -1,9 +1,12 @@
 package entities
 
 import p
+import processing.core.PApplet
 import processing.core.PVector
 import java.awt.Color
+import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
 
 data class Zone(val pos: PVector, val height: Float, val width: Float, val angle: Float = 0f) {
@@ -32,35 +35,44 @@ data class Zone(val pos: PVector, val height: Float, val width: Float, val angle
 	val bottom = maxOf(y1, y2)
 }
 
-data class Wall(val pos: PVector, val width: Float, val angle: Float) {
+data class Wall(val pos: PVector, val height: Float, val width: Float, val angle: Float) {
 	private val color = Color.HSBtoRGB(p.random(0f, 1f), p.random(0f, 1f), 1f)
 	val zone = Zone(
 		pos = pos,
-		height = HEIGHT,
+		height = height,
 		width = width,
 		angle = angle
 	)
 
 	fun draw() {
+		p.push()
 		p.fill(color)
-		p.rect(zone.x1, zone.y1, zone.x2, zone.y2)
+		p.rectMode(PApplet.CENTER)
+		p.translate(zone.pos.x, zone.pos.y)
+		p.rect(0f, 0f, zone.width, zone.height)
+		p.pop()
 	}
 
 	fun collidesWith(player: Player): Boolean {
-		val points = listOf(
-			PVector(player.pos.x - Player.RADIUS, player.pos.y - Player.RADIUS),
-			PVector(player.pos.x + Player.RADIUS, player.pos.y - Player.RADIUS),
-			PVector(player.pos.x + Player.RADIUS, player.pos.y + Player.RADIUS),
-			PVector(player.pos.x - Player.RADIUS, player.pos.y + Player.RADIUS)
-		)
+		val xCircleDistance = abs(player.pos.x - zone.pos.x)
+		val yCircleDistance = abs(player.pos.y - zone.pos.y)
 
-		return points.any {
-			it.x > zone.left && it.x < zone.right && it.y > zone.top && it.y < zone.bottom
-		}
+		val halfWidth = zone.width / 2
+		val halfHeight = zone.height / 2
+
+		if (xCircleDistance > (halfWidth + Player.RADIUS)) return false
+		if (yCircleDistance > (halfHeight + Player.RADIUS)) return false
+
+		if (xCircleDistance <= halfWidth) return true
+		if (yCircleDistance <= halfHeight) return true
+
+		val cornerDistance = (xCircleDistance - halfWidth).pow(2) + (yCircleDistance - halfHeight).pow(2)
+
+		return cornerDistance <= Player.RADIUS.pow(2)
 	}
 
 	companion object {
-		const val HEIGHT = 12f
-		val widthRange = 60f..300f
+		val heightRange = 30f..200f
+		val widthRange = 30f..200f
 	}
 }

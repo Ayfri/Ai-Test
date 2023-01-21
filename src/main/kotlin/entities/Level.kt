@@ -24,9 +24,10 @@ class Level {
 		for (i in 0..count) {
 			val x = p.random(p.width.toFloat())
 			val y = p.random(p.height.toFloat())
+			val height = p.random(Wall.heightRange.start, Wall.heightRange.endInclusive)
 			val width = p.random(Wall.widthRange.start, Wall.widthRange.endInclusive)
 			val angle = p.random(PApplet.TWO_PI)
-			walls += Wall(PVector(x, y), width, angle)
+			walls += Wall(PVector(x, y), height, width, angle)
 		}
 	}
 
