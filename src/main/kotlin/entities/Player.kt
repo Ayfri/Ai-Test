@@ -60,7 +60,7 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 			brain.step++
 		}
 
-		velocity.limit(6f)
+		velocity.limit(4f)
 		pos.add(velocity)
 	}
 
