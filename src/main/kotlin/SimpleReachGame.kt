@@ -47,7 +47,7 @@ class SimpleReachGame : PApplet() {
 
 		level.generateRandomWalls(60)
 		level.setFlag()
-		level.setPlayers()
+		level.population.setPlayers()
 		setupUpdate()
 		startTime = System.currentTimeMillis()
 	}
@@ -103,13 +103,13 @@ class SimpleReachGame : PApplet() {
 		fill(0f)
 		textSize(22f)
 
-		text("Step: ${level.players[0].brain.step}", 1)
+		text("Step: ${level.population.players[0].brain.step}", 1)
 		text("Speed: $speed", 2)
 		text("Framerate: $frameRate", 3)
 		text("Time: ${timing.inWholeMilliseconds}ms", 5)
 		text("Min steps: ${level.population.minSteps}", 6)
 		text("Generation: ${level.population.generation}", 7)
-		text("Population: ${level.players.size}", 8)
+		text("Population: ${level.population.players.size}", 8)
 		text("Fitness sum: ${level.population.fitnessSum}", 9)
 		text("Mutation rate: ${(Brain.mutationRate * 100).roundToDecimalPlaces(2)}%", 10)
 
@@ -130,7 +130,8 @@ class SimpleReachGame : PApplet() {
 	}
 
 	override fun mouseMoved() {
-		hoverPlayer = level.players.firstOrNull { it.collidesWith(PVector(mouseX.toFloat(), mouseY.toFloat())) }
+		hoverPlayer =
+			level.population.players.firstOrNull { it.collidesWith(PVector(mouseX.toFloat(), mouseY.toFloat())) }
 	}
 
 	override fun keyPressed() {
@@ -150,7 +151,7 @@ class SimpleReachGame : PApplet() {
 			'r' -> level = Level().apply {
 				generateRandomWalls(60)
 				setFlag()
-				setPlayers()
+				population.setPlayers()
 				line.clear()
 			}
 

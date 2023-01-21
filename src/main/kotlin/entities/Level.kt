@@ -7,24 +7,21 @@ import processing.core.PVector
 class Level {
 	val walls = mutableListOf<Wall>()
 	val flag = Flag(PVector())
-	val players = mutableListOf<Player>()
-	val population = Population(this, players)
-	val populationSize = 400
+	val population = Population(this)
 	var onlyDisplayBest = false
 
 	fun draw() {
 		flag.draw()
-		if (!onlyDisplayBest) players.drop(1).forEach(Player::draw)
-		players.first().draw()
+		population.draw()
 	}
 
 	fun update() {
-		players.forEach { it.update(this) }
+		population.update()
 	}
 
 	fun generateRandomWalls(count: Int) {
 		walls.clear()
-		for (i in 0 .. count) {
+		for (i in 0..count) {
 			val x = p.random(p.width.toFloat())
 			val y = p.random(p.height.toFloat())
 			val width = p.random(Wall.widthRange.start, Wall.widthRange.endInclusive)
@@ -38,15 +35,5 @@ class Level {
 		flag.pos.y = 10f
 	}
 
-	fun setPlayers() {
-		players.clear()
-		for (i in 0 until populationSize) {
-			players += Player()
-		}
-	}
-
-	fun reset() {
-		setPlayers()
-		population.reset()
-	}
+	fun reset() = population.reset()
 }

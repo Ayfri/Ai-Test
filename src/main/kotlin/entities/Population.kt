@@ -2,12 +2,21 @@ package entities
 
 import p
 
-class Population(val level: Level, val players: MutableList<Player> = mutableListOf()) {
+class Population(val level: Level) {
 	val isFinished get() = players.any { it.hasReachedGoal || it.brain.step == it.brain.directions.size }
+	val players = mutableListOf<Player>()
+	val populationSize = 400
 	var minSteps = Brain.STARTING_STEPS
 	var bestPlayerIndex = 0
 	var fitnessSum = 0f
 	var generation = 0
+
+	fun draw() {
+		if (!level.onlyDisplayBest) players.drop(1).forEach(Player::draw)
+		players.first().draw()
+	}
+
+	fun update() = players.forEach { it.update(level) }
 
 	fun calculateFitnessSum() = players.sumOf { it.fitness }.toFloat().also { fitnessSum = it }
 
@@ -43,11 +52,19 @@ class Population(val level: Level, val players: MutableList<Player> = mutableLis
 		}
 	}
 
+	fun setPlayers() {
+		players.clear()
+		for (i in 0 until populationSize) {
+			players += Player()
+		}
+	}
+
 	fun calculateFitness() = players.forEach { it.calculateFitness(level) }
 
 	fun mutatePlayers() = players.subList(1, players.size).forEach { it.brain.mutate() }
 
 	fun reset() {
+		setPlayers()
 		generation = 0
 		minSteps = Brain.STARTING_STEPS
 	}
