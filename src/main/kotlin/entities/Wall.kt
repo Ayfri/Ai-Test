@@ -72,7 +72,7 @@ data class Wall(val pos: PVector, val height: Float, val width: Float, val angle
 	}
 
 	companion object {
-		val heightRange = 30f..200f
-		val widthRange = 30f..200f
+		val heightRange = 10f..250f
+		val widthRange = 10f..250f
 	}
 }
