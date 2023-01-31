@@ -54,7 +54,7 @@ class SimpleReachGame : PApplet() {
 	private fun setupUpdate() = if (speed < MAX_SPEED) Executors.newSingleThreadScheduledExecutor().let {
 		it.scheduleAtFixedRate({
 			level.update()
-		}, 0, max((10_000_000 / speed).toLong(), 1), TimeUnit.NANOSECONDS)
+		}, 0, max((5_000_000 / speed).toLong(), 1), TimeUnit.NANOSECONDS)
 		executor = it
 	} else Executors.newSingleThreadScheduledExecutor().let {
 		it.scheduleAtFixedRate({
@@ -166,7 +166,7 @@ class SimpleReachGame : PApplet() {
 	}
 
 	companion object {
-		const val MAX_SPEED = 20f
+		const val MAX_SPEED = 10f
 	}
 }
 
