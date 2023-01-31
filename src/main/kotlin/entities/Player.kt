@@ -4,31 +4,11 @@ import line
 import p
 import processing.core.PVector
 
-data class Circle(val pos: PVector, val radius: Float) {
-	val diameter get() = radius * 2f
-
-	fun intersects(zone: Zone): Boolean {
-		var testX = pos.x
-		var testY = pos.y
-
-		if (pos.x < zone.left) testX = zone.left
-		else if (pos.x > zone.right) testX = zone.right
-		if (pos.y < zone.top) testY = zone.top
-		else if (pos.y > zone.bottom) testY = zone.bottom
-
-		val distX = pos.x - testX
-		val distY = pos.y - testY
-		val distance = kotlin.math.sqrt((distX * distX) + (distY * distY))
-
-		return distance <= radius
-	}
-}
-
-data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Brain()) {
+data class Player(
+	val pos: PVector = startingPoint.copy(),
+	val brain: Brain = Brain()
+) {
 	val velocity = PVector(0f, 0f)
-
-	// I'm bad at maths, so zones are broken for now.
-	// val zone = Circle(pos, RADIUS)
 	var fitness = 0.0
 	var hasReachedGoal = false
 	var isBest = false
@@ -53,11 +33,7 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 	}
 
 	fun move() {
-		if (!hasReachedGoal) {
-			velocity.add(brain.directions[brain.step])
-			brain.step++
-		}
-
+		velocity.add(brain.directions[brain.step++])
 		velocity.limit(4f)
 		pos.add(velocity)
 	}
@@ -96,7 +72,7 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 			}
 		}
 
-		if (pos in level.flag) hasReachedGoal = true
+		if (level.flag.collidesWith(this)) hasReachedGoal = true
 	}
 
 	fun createBaby() = Player(brain = brain.clone())

@@ -9,7 +9,12 @@ import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
-data class Zone(val pos: PVector, val height: Float, val width: Float, val angle: Float = 0f) {
+data class Zone(
+	val pos: PVector,
+	val height: Float,
+	val width: Float,
+	val angle: Float = 0f
+) {
 	val x1: Float
 	val y1: Float
 	val x2: Float

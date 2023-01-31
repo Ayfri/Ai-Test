@@ -2,10 +2,12 @@ package entities
 
 import p
 import processing.core.PVector
+import kotlin.math.abs
+import kotlin.math.pow
 
 data class Flag(var pos: PVector) {
 	val diameter = 10f
-	inline val halfDiameter get() = diameter / 2f
+	val radius = diameter / 2f
 
 	fun draw() {
 		p.push()
@@ -14,6 +16,10 @@ data class Flag(var pos: PVector) {
 		p.pop()
 	}
 
-	operator fun contains(point: PVector) =
-		point.x > pos.x - halfDiameter && point.x < pos.x + halfDiameter && point.y > pos.y - halfDiameter && point.y < pos.y + halfDiameter
+	fun collidesWith(player: Player): Boolean {
+		val xDistance = abs(player.pos.x - pos.x)
+		val yDistance = abs(player.pos.y - pos.y)
+		val distance = xDistance.pow(2) + yDistance.pow(2)
+		return distance < (Player.RADIUS + radius).pow(2)
+	}
 }
