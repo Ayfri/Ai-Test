@@ -85,22 +85,11 @@ class SimpleReachGame : PApplet() {
 		} else {
 			level.draw()
 		}
-		/*collisions.forEach { collision ->
-			stroke(255f, 0f, 0f)
-			point(collision.x, collision.y)
-			strokeWeight(1f)
-		}*/
-		beginShape()
-		noFill()
-		stroke(0f, 0f, 255f)
-		strokeWeight(2f)
-		line.forEach { (x, y) -> curveVertex(x, y) }
-		endShape()
-		strokeWeight(.75f)
-		stroke(0f)
 
-		fill(0f)
+		displayLine()
+
 		textSize(22f)
+		fill(0f)
 
 		text("Step: ${level.population.players[0].brain.step}", 1)
 		text("Speed: $speed", 2)
@@ -116,6 +105,18 @@ class SimpleReachGame : PApplet() {
 			text("Velocity: ${it.velocity}", 12)
 			text("Position: ${it.pos}", 13)
 		}
+	}
+
+	@Suppress("NOTHING_TO_INLINE")
+	private inline fun displayLine() {
+		push()
+		beginShape()
+		noFill()
+		stroke(0f, 0f, 255f)
+		strokeWeight(2f)
+		line.forEach { (x, y) -> curveVertex(x, y) }
+		endShape()
+		pop()
 	}
 
 	private fun changeGeneration() {
