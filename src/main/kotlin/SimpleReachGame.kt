@@ -12,7 +12,6 @@ import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
-val collisions = mutableSetOf<PVector>()
 val line = mutableSetOf<PVector>()
 
 class SimpleReachGame : PApplet() {
@@ -125,7 +124,6 @@ class SimpleReachGame : PApplet() {
 		level.population.calculateFitness()
 		level.population.naturalSelection()
 		level.population.mutatePlayers()
-		collisions.clear()
 		line.clear()
 	}
 

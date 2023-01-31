@@ -88,11 +88,6 @@ data class Player(val pos: PVector = startingPoint.copy(), val brain: Brain = Br
 		level.walls.forEach { wall ->
 			if (!wall.collidesWith(this)) return@forEach
 
-			collisions += pos.copy().apply {
-				x = round(x)
-				y = round(y)
-			}
-
 			pos.sub(velocity)
 
 			when {
