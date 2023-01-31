@@ -1,9 +1,10 @@
 package entities
 
-import processing.core.PVector
+import fastRandom
+import fastRandomVec
 
 class Brain(steps: Int = STARTING_STEPS) {
-	val directions = MutableList(steps) { PVector.random2D() }
+	val directions = MutableList(steps) { fastRandomVec() }
 	var step = 0
 
 	fun clone(): Brain {
@@ -14,7 +15,7 @@ class Brain(steps: Int = STARTING_STEPS) {
 
 	fun mutate() {
 		for (i in directions.indices) {
-			if (Math.random() < mutationRate) directions[i] = PVector.random2D()
+			if (fastRandom.nextDouble() < mutationRate) directions[i] = fastRandomVec()
 		}
 	}
 

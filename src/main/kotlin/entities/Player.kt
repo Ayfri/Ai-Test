@@ -1,10 +1,8 @@
 package entities
 
-import collisions
 import line
 import p
 import processing.core.PVector
-import kotlin.math.round
 
 data class Circle(val pos: PVector, val radius: Float) {
 	val diameter get() = radius * 2f

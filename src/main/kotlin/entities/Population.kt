@@ -1,6 +1,6 @@
 package entities
 
-import p
+import fastRandom
 
 class Population(val level: Level) {
 	val isFinished get() = players.any { it.hasReachedGoal || it.brain.step == it.brain.directions.size }
@@ -30,7 +30,7 @@ class Population(val level: Level) {
 	fun naturalSelection() {
 		val newPlayers = ArrayList<Player>(players.size)
 		calculateFitnessSum()
-		newPlayers += getBestPlayer().createBaby().also { it.isBest = true }
+		newPlayers += getBestPlayer().createBaby().apply { isBest = true }
 
 		for (i in 1 until players.size) {
 			val parent = selectParent()
@@ -43,7 +43,7 @@ class Population(val level: Level) {
 	}
 
 	fun selectParent(): Player {
-		val rand = p.random(fitnessSum)
+		val rand = fastRandom.nextFloat(fitnessSum)
 		var runningSum = 0.0
 
 		return players.first {

@@ -1,5 +1,6 @@
 import processing.core.PApplet
 import processing.core.PVector
+import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -16,3 +17,8 @@ fun Number.roundToDecimalPlaces(decimalPlaces: Int): Float {
 	val factor = 10f.pow(decimalPlaces)
 	return (this.toFloat() * factor).roundToInt() / factor
 }
+
+val fastRandom = SplittableRandom()
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun fastRandomVec() = PVector(fastRandom.nextFloat(-1f, 1f), fastRandom.nextFloat(-1f, 1f))
