@@ -4,12 +4,12 @@ import fastRandom
 import fastRandomVec
 
 class Brain(steps: Int = STARTING_STEPS) {
-	val directions = MutableList(steps) { fastRandomVec() }
-	var step = 0
+	var directions = MutableList(steps) { fastRandomVec() }
+		private set
 
 	fun clone(): Brain {
 		val clone = Brain(0)
-		clone.directions.addAll(directions)
+		clone.directions = directions.toMutableList()
 		return clone
 	}
 
@@ -19,7 +19,7 @@ class Brain(steps: Int = STARTING_STEPS) {
 		}
 	}
 
-	override fun toString() = "Brain(directions=$directions, step=$step)"
+	override fun toString() = "Brain(directions=$directions)"
 
 	companion object {
 		const val STARTING_STEPS = 10000

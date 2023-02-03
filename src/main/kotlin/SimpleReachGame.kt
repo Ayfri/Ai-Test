@@ -91,11 +91,11 @@ class SimpleReachGame : PApplet() {
 		textSize(22f)
 		fill(0f)
 
-		text("Step: ${level.population.players[0].brain.step}", 1)
+		text("Step: ${level.step}", 1)
 		text("Speed: $speed", 2)
 		text("Framerate: $frameRate", 3)
 		text("Time: ${timing.inWholeMilliseconds}ms", 5)
-		text("Min steps: ${level.population.minSteps}", 6)
+		text("Min steps: ${level.minSteps}", 6)
 		text("Generation: ${level.population.generation}", 7)
 		text("Population: ${level.population.players.size}", 8)
 		text("Fitness sum: ${level.population.fitnessSum}", 9)
@@ -125,6 +125,7 @@ class SimpleReachGame : PApplet() {
 		level.population.calculateFitness()
 		level.population.naturalSelection()
 		level.population.mutatePlayers()
+		level.step = 0
 		line.clear()
 	}
 

@@ -3,12 +3,11 @@ package entities
 import fastRandom
 
 class Population(val level: Level) {
-	val isFinished get() = players.any { it.hasReachedGoal || it.brain.step == it.brain.directions.size }
+	val isFinished get() = players.any { it.hasReachedGoal || level.step >= level.minSteps }
 	val players = mutableListOf<Player>()
 	val populationSize = 500
-	var minSteps = Brain.STARTING_STEPS
 	var bestPlayerIndex = 0
-	var fitnessSum = 0f
+	var fitnessSum = 0.0
 	var generation = 0
 
 	fun draw() {
@@ -18,19 +17,21 @@ class Population(val level: Level) {
 
 	fun update() = players.forEach { it.update(level) }
 
-	fun calculateFitnessSum() = players.sumOf { it.fitness }.toFloat().also { fitnessSum = it }
+	fun calculateFitnessSum() = players.sumOf { it.fitness }.also { fitnessSum = it }
 
 	fun getBestPlayer(): Player {
 		val player = players.maxBy(Player::fitness)
 		bestPlayerIndex = players.indexOf(player)
-		if (player.hasReachedGoal && player.brain.step < minSteps) minSteps = player.brain.step
 		return player
 	}
 
 	fun naturalSelection() {
 		val newPlayers = ArrayList<Player>(players.size)
 		calculateFitnessSum()
+
 		newPlayers += getBestPlayer().createBaby().apply { isBest = true }
+
+		if (level.step < level.minSteps) level.minSteps = level.step
 
 		for (i in 1 until players.size) {
 			val parent = selectParent()
@@ -43,7 +44,7 @@ class Population(val level: Level) {
 	}
 
 	fun selectParent(): Player {
-		val rand = fastRandom.nextFloat(fitnessSum)
+		val rand = fastRandom.nextDouble(fitnessSum)
 		var runningSum = 0.0
 
 		return players.first {
@@ -66,6 +67,5 @@ class Population(val level: Level) {
 	fun reset() {
 		setPlayers()
 		generation = 0
-		minSteps = Brain.STARTING_STEPS
 	}
 }

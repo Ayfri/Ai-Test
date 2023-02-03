@@ -9,6 +9,8 @@ class Level {
 	val flag = Flag(PVector())
 	val population = Population(this)
 	var onlyDisplayBest = false
+	var step = 0
+	var minSteps = Brain.STARTING_STEPS
 
 	fun draw() {
 		flag.draw()
@@ -16,6 +18,7 @@ class Level {
 	}
 
 	fun update() {
+		step++
 		population.update()
 	}
 
@@ -36,5 +39,8 @@ class Level {
 		flag.pos.y = 10f
 	}
 
-	fun reset() = population.reset()
+	fun reset() {
+		population.reset()
+		minSteps = Brain.STARTING_STEPS
+	}
 }

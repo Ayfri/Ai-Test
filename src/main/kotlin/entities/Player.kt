@@ -32,17 +32,17 @@ data class Player(
 		p.pop()
 	}
 
-	fun move() {
-		velocity.add(brain.directions[brain.step++])
+	fun move(level: Level) {
+		velocity.add(brain.directions[level.step])
 		velocity.limit(4f)
 		pos.add(velocity)
 	}
 
 	fun update(level: Level) {
-		if (!hasReachedGoal) {
-			move()
-			checkCollision(level)
-		}
+		if (hasReachedGoal) return
+
+		move(level)
+		checkCollision(level)
 	}
 
 	fun collidesWith(point: PVector) = point.x > pos.x - RADIUS && point.x < pos.x + RADIUS && point.y > pos.y - RADIUS && point.y < pos.y + RADIUS
@@ -83,7 +83,7 @@ data class Player(
 	 */
 	fun calculateFitness(level: Level) {
 		fitness = if (hasReachedGoal) {
-			1.0 / 16.0 + 10000.0 / (brain.step * brain.step)
+			1.0 / 16.0 + 10000.0 / (level.step * level.step)
 		} else {
 			val distanceToGoal = pos.dist(level.flag.pos)
 			1.0 / +10 / (distanceToGoal * distanceToGoal)
