@@ -24,13 +24,18 @@ class Level {
 
 	fun generateRandomWalls(count: Int) {
 		walls.clear()
-		for (i in 0..count) {
+		while (walls.size < count) {
 			val x = p.random(p.width.toFloat())
 			val y = p.random(p.height.toFloat())
 			val height = p.random(Wall.heightRange.start, Wall.heightRange.endInclusive)
 			val width = p.random(Wall.widthRange.start, Wall.widthRange.endInclusive)
 			val angle = p.random(PApplet.TWO_PI)
-			walls += Wall(PVector(x, y), height, width, angle)
+
+			val wall = Wall(PVector(x, y), height, width, angle)
+			if (wall.collidesWith(p.width / 2f, 10f, flag.radius)) continue
+			if (wall.collidesWith(Player.startingPoint.x, Player.startingPoint.y, Player.RADIUS)) continue
+
+			walls += wall
 		}
 	}
 
