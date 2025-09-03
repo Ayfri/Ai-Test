@@ -55,28 +55,62 @@ data class Player(
 	}
 
 	fun checkCollision(level: Level) {
-		if (pos.x < 0 || pos.x > p.width || pos.y < 0 || pos.y > p.height) {
+		// Check boundaries collision
+		val nextX = pos.x + velocity.x
+		val nextY = pos.y + velocity.y
+
+		if (nextX < RADIUS || nextX > p.width - RADIUS || nextY < RADIUS || nextY > p.height - RADIUS) {
 			pos.sub(velocity)
 
 			when {
-				pos.x + velocity.x < 0 -> velocity.x = 0f
-				pos.x + velocity.x > p.width -> velocity.x = 0f
-				pos.y + velocity.y < 0 -> velocity.y = 0f
-				pos.y + velocity.y > p.height -> velocity.y = 0f
+				nextX < RADIUS -> velocity.x = 0f
+				nextX > p.width - RADIUS -> velocity.x = 0f
+				nextY < RADIUS -> velocity.y = 0f
+				nextY > p.height - RADIUS -> velocity.y = 0f
 			}
 		}
 
+		// Check wall collisions - prevent penetration while allowing sliding
 		level.walls.forEach { wall ->
-			if (!wall.collidesWith(this)) return@forEach
+			// Check if player would collide with wall after full movement
+			if (!wall.collidesWith(nextX, nextY, RADIUS)) return@forEach
 
 			touchedWallCount++
-			pos.sub(velocity)
 
-			when {
-				pos.x + velocity.x < wall.zone.left -> velocity.x = 0f
-				pos.x + velocity.x > wall.zone.right -> velocity.x = 0f
-				pos.y + velocity.y < wall.zone.top -> velocity.y = 0f
-				pos.y + velocity.y > wall.zone.bottom -> velocity.y = 0f
+			// Test movement in each axis separately to allow sliding
+			val canMoveX = !wall.collidesWith(pos.x + velocity.x, pos.y, RADIUS)
+			val canMoveY = !wall.collidesWith(pos.x, pos.y + velocity.y, RADIUS)
+
+			// If player is already overlapping with wall, push them out
+			if (wall.collidesWith(pos.x, pos.y, RADIUS)) {
+				// Calculate push-out direction based on wall center
+				val wallCenterX = wall.zone.pos.x
+				val wallCenterY = wall.zone.pos.y
+				val relativeX = pos.x - wallCenterX
+				val relativeY = pos.y - wallCenterY
+
+				// Calculate minimum distances to push out of wall
+				val xDistanceToEdge = wall.zone.halfWidth + RADIUS - kotlin.math.abs(relativeX)
+				val yDistanceToEdge = wall.zone.halfHeight + RADIUS - kotlin.math.abs(relativeY)
+
+				// Push out in the direction that requires minimum movement
+				if (xDistanceToEdge < yDistanceToEdge) {
+					// Push out horizontally
+					pos.x = wallCenterX + (wall.zone.halfWidth + RADIUS) * kotlin.math.sign(relativeX)
+					velocity.x = 0f
+				} else {
+					// Push out vertically
+					pos.y = wallCenterY + (wall.zone.halfHeight + RADIUS) * kotlin.math.sign(relativeY)
+					velocity.y = 0f
+				}
+			} else {
+				// Player is approaching wall - block movement in directions that would cause collision
+				if (!canMoveX) {
+					velocity.x = 0f
+				}
+				if (!canMoveY) {
+					velocity.y = 0f
+				}
 			}
 		}
 
