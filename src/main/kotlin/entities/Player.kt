@@ -1,6 +1,5 @@
 package entities
 
-import line
 import p
 import processing.core.PVector
 
@@ -20,7 +19,6 @@ data class Player(
 			isBest -> {
 				p.strokeWeight(8f)
 				p.stroke(0f, 128f, 255f)
-				line += pos.copy()
 			}
 
 			else -> {
@@ -35,6 +33,14 @@ data class Player(
 
 	fun move(level: Level) {
 		val pVector = brain.directions[level.step]
+		velocity.x += pVector.x
+		velocity.y += pVector.y
+		velocity.limit(4f)
+		pos.add(velocity)
+	}
+
+	fun move(level: Level, step: Int) {
+		val pVector = brain.directions[step]
 		velocity.x += pVector.x
 		velocity.y += pVector.y
 		velocity.limit(4f)

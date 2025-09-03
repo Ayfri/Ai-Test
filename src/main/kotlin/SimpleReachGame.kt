@@ -1,4 +1,3 @@
-
 import entities.Brain
 import entities.Level
 import entities.Player
@@ -12,6 +11,8 @@ import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
+val bestPlayerPath = mutableListOf<PVector>()
+var pathDisplayStep = 0
 val line = mutableSetOf<PVector>()
 val averageCollisionCalculationTime = ArrayList<Long>(1000)
 
@@ -24,7 +25,7 @@ class SimpleReachGame : PApplet() {
 	@Volatile
 	var speed = 0.125f
 		set(value) {
-			if (value < 0 || value > MAX_SPEED) return
+			if (value !in 0.0F..MAX_SPEED) return
 			field = value
 			deleteUpdate()
 			setupUpdate()
@@ -113,12 +114,28 @@ class SimpleReachGame : PApplet() {
 
 	@Suppress("NOTHING_TO_INLINE")
 	private inline fun displayLine() {
+		if (bestPlayerPath.isEmpty()) return
+
 		push()
 		beginShape()
 		noFill()
 		stroke(0f, 0f, 255f)
 		strokeWeight(2f)
-		line.forEach { (x, y) -> curveVertex(x, y) }
+
+		// Always sync with actual player step + 1, regardless of speed
+		val targetDisplayStep = minOf(level.step + 1, bestPlayerPath.size - 1)
+
+		// Filter out consecutive duplicate points to avoid curve issues
+		var lastPoint: PVector? = null
+		for (i in 0..targetDisplayStep) {
+			val point = bestPlayerPath[i]
+			// Only add curveVertex if point is different from the previous one
+			if (lastPoint == null || point.x != lastPoint.x || point.y != lastPoint.y) {
+				curveVertex(point.x, point.y)
+				lastPoint = point
+			}
+		}
+
 		endShape()
 		pop()
 	}
@@ -127,10 +144,38 @@ class SimpleReachGame : PApplet() {
 		timing = (System.currentTimeMillis() - startTime).milliseconds
 		startTime = System.currentTimeMillis()
 		level.population.calculateFitness()
+
+		// Pre-calculate the best player's path before natural selection
+		preCalculateBestPlayerPath()
+
 		level.population.naturalSelection()
 		level.population.mutatePlayers()
 		level.step = 0
 		line.clear()
+		pathDisplayStep = 0
+	}
+
+	private fun preCalculateBestPlayerPath() {
+		bestPlayerPath.clear()
+		val bestPlayer = level.population.getBestPlayer()
+
+		// Create a simulation copy of the best player
+		val simulationPlayer = Player(
+			pos = Player.startingPoint.copy(),
+			brain = bestPlayer.brain
+		)
+
+		// Add starting position
+		bestPlayerPath.add(simulationPlayer.pos.copy())
+
+		// Simulate the player's movement step by step
+		var step = 0
+		while (step < level.minSteps && !simulationPlayer.hasReachedGoal) {
+			simulationPlayer.move(level, step)
+			simulationPlayer.checkCollision(level)
+			bestPlayerPath.add(simulationPlayer.pos.copy())
+			step++
+		}
 	}
 
 	override fun mouseMoved() {
@@ -147,6 +192,8 @@ class SimpleReachGame : PApplet() {
 				level.flag.pos = PVector(mouseX.toFloat(), mouseY.toFloat())
 				level.reset()
 				line.clear()
+				bestPlayerPath.clear()
+				pathDisplayStep = 0
 				setupUpdate()
 				movingFlag = false
 			}
@@ -156,6 +203,8 @@ class SimpleReachGame : PApplet() {
 				setFlag()
 				population.setPlayers()
 				line.clear()
+				bestPlayerPath.clear()
+				pathDisplayStep = 0
 			}
 
 			'd' -> {
@@ -170,7 +219,7 @@ class SimpleReachGame : PApplet() {
 	}
 
 	companion object {
-		const val MAX_SPEED = 10f
+		const val MAX_SPEED = 10.0F
 	}
 }
 
