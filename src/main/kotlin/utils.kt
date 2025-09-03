@@ -1,8 +1,11 @@
+
 import processing.core.PApplet
 import processing.core.PVector
 import java.util.*
+import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sin
 
 operator fun PVector.component1() = x
 operator fun PVector.component2() = y
@@ -21,4 +24,7 @@ fun Number.roundToDecimalPlaces(decimalPlaces: Int): Float {
 val fastRandom = SplittableRandom()
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun fastRandomVec() = PVector(fastRandom.nextFloat(-1f, 1f), fastRandom.nextFloat(-1f, 1f))
+inline fun fastRandomVec(): PVector {
+	val angle = fastRandom.nextDouble(0.0, 2 * Math.PI)
+	return PVector(cos(angle).toFloat(), sin(angle).toFloat())
+}

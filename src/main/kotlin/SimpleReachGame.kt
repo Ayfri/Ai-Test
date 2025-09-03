@@ -13,15 +13,16 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 val line = mutableSetOf<PVector>()
+val averageCollisionCalculationTime = ArrayList<Long>(1000)
 
 class SimpleReachGame : PApplet() {
 	private var movingFlag = false
-	var level = Level()
+	lateinit var level: Level
 	var timing = 10.minutes
 	var startTime = 0L
 
 	@Volatile
-	var speed = 2f
+	var speed = 0.125f
 		set(value) {
 			if (value < 0 || value > MAX_SPEED) return
 			field = value
@@ -39,8 +40,9 @@ class SimpleReachGame : PApplet() {
 
 	override fun setup() {
 		background(255f)
-		frameRate(60f)
+		frameRate(170f)
 		p = this
+		level = Level()
 		rectMode(CORNERS)
 		ellipseMode(RADIUS)
 
@@ -94,6 +96,8 @@ class SimpleReachGame : PApplet() {
 		text("Step: ${level.step}", 1)
 		text("Speed: $speed", 2)
 		text("Framerate: $frameRate", 3)
+		val collisionCalculationTime = averageCollisionCalculationTime.toList()
+		text("Average collision calculation time: ${collisionCalculationTime.average()}ns", 4)
 		text("Time: ${timing.inWholeMilliseconds}ms", 5)
 		text("Min steps: ${level.minSteps}", 6)
 		text("Generation: ${level.population.generation}", 7)
@@ -130,14 +134,13 @@ class SimpleReachGame : PApplet() {
 	}
 
 	override fun mouseMoved() {
-		hoverPlayer =
-			level.population.players.firstOrNull { it.collidesWith(PVector(mouseX.toFloat(), mouseY.toFloat())) }
+//		hoverPlayer = level.population.players.firstOrNull { it.collidesWith(PVector(mouseX.toFloat(), mouseY.toFloat())) }
 	}
 
 	override fun keyPressed() {
 		when (key) {
-			'+' -> speed += .25f
-			'-' -> speed -= .25f
+			'+' -> speed += .125f
+			'-' -> speed -= .125f
 			'f' -> {
 				movingFlag = true
 				deleteUpdate()
