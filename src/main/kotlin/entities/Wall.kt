@@ -6,7 +6,6 @@ import processing.core.PVector
 import java.awt.Color
 import kotlin.math.abs
 import kotlin.math.cos
-import kotlin.math.pow
 import kotlin.math.sin
 
 data class Zone(
@@ -15,14 +14,15 @@ data class Zone(
 	val width: Float,
 	val angle: Float = 0f
 ) {
+	val halfWidth = width / 2f
+	val halfHeight = height / 2f
+
 	val x1: Float
 	val y1: Float
 	val x2: Float
 	val y2: Float
 
 	init {
-		val halfWidth = width / 2f
-		val halfHeight = height / 2f
 		val x = pos.x
 		val y = pos.y
 		val cos = cos(angle)
@@ -58,23 +58,48 @@ data class Wall(val pos: PVector, val height: Float, val width: Float, val angle
 		p.pop()
 	}
 
-	fun collidesWith(player: Player): Boolean {
-		val xCircleDistance = abs(player.pos.x - zone.pos.x)
-		val yCircleDistance = abs(player.pos.y - zone.pos.y)
+	@Suppress("NOTHING_TO_INLINE")
+	inline fun Float.squared() = this * this
 
-		val halfWidth = zone.width / 2
-		val halfHeight = zone.height / 2
+	@Suppress("NOTHING_TO_INLINE")
+	inline fun collidesWith(player: Player) = collidesWith(player.pos.x, player.pos.y, Player.RADIUS)
 
-		if (xCircleDistance > (halfWidth + Player.RADIUS)) return false
-		if (yCircleDistance > (halfHeight + Player.RADIUS)) return false
+	/* fun collidesWith(x: Float, y: Float, radius: Float): Boolean {
+		val xCircleDistance = abs(x - zone.pos.x)
+		val yCircleDistance = abs(y - zone.pos.y)
+
+		val halfWidth = zone.halfWidth
+		val halfHeight = zone.halfHeight
+
+		if (xCircleDistance > (halfWidth + radius)) return false
+		if (yCircleDistance > (halfHeight + radius)) return false
 
 		if (xCircleDistance <= halfWidth) return true
 		if (yCircleDistance <= halfHeight) return true
 
-		val cornerDistance = (xCircleDistance - halfWidth).pow(2) + (yCircleDistance - halfHeight).pow(2)
+		val cornerDistance = (xCircleDistance - halfWidth).squared() + (yCircleDistance - halfHeight).squared()
 
-		return cornerDistance <= Player.RADIUS.pow(2)
+		return cornerDistance <= radius.squared()
+	} */
+	fun collidesWith(x: Float, y: Float, radius: Float): Boolean {
+		val halfWidth = zone.halfWidth
+		val halfHeight = zone.halfHeight
+		val radiusPlusHalfWidth = radius + halfWidth
+
+		val xCircleDistance = abs(x - zone.pos.x)
+		val yCircleDistance = abs(y - zone.pos.y)
+
+		if (xCircleDistance > radiusPlusHalfWidth) return false
+		if (yCircleDistance > (halfHeight + radius)) return false
+
+		if (xCircleDistance <= halfWidth) return true
+		if (yCircleDistance <= halfHeight) return true
+
+		val cornerDistance = (xCircleDistance - halfWidth).squared() + (yCircleDistance - halfHeight).squared()
+
+		return cornerDistance <= radius.squared()
 	}
+
 
 	companion object {
 		val heightRange = 10f..250f

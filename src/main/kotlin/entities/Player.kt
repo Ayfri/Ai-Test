@@ -12,6 +12,7 @@ data class Player(
 	var fitness = 0.0
 	var hasReachedGoal = false
 	var isBest = false
+	var touchedWallCount = 0
 
 	fun draw() {
 		p.push()
@@ -33,7 +34,9 @@ data class Player(
 	}
 
 	fun move(level: Level) {
-		velocity.add(brain.directions[level.step])
+		val pVector = brain.directions[level.step]
+		velocity.x += pVector.x
+		velocity.y += pVector.y
 		velocity.limit(4f)
 		pos.add(velocity)
 	}
@@ -44,8 +47,6 @@ data class Player(
 		move(level)
 		checkCollision(level)
 	}
-
-	fun collidesWith(point: PVector) = point.x > pos.x - RADIUS && point.x < pos.x + RADIUS && point.y > pos.y - RADIUS && point.y < pos.y + RADIUS
 
 	fun checkCollision(level: Level) {
 		if (pos.x < 0 || pos.x > p.width || pos.y < 0 || pos.y > p.height) {
@@ -62,6 +63,7 @@ data class Player(
 		level.walls.forEach { wall ->
 			if (!wall.collidesWith(this)) return@forEach
 
+			touchedWallCount++
 			pos.sub(velocity)
 
 			when {
@@ -84,9 +86,11 @@ data class Player(
 	fun calculateFitness(level: Level) {
 		fitness = if (hasReachedGoal) {
 			1.0 / 16.0 + 10000.0 / (level.step * level.step)
+//			1.0 / 16.0 + 10000.0 / (level.step * level.step) + 10000.0 / (touchedWallCount * touchedWallCount).coerceAtLeast(1)
 		} else {
 			val distanceToGoal = pos.dist(level.flag.pos)
 			1.0 / +10 / (distanceToGoal * distanceToGoal)
+//			1.0 / +10 / (distanceToGoal * distanceToGoal) + 1.0 / (touchedWallCount * touchedWallCount).coerceAtLeast(1)
 		}
 	}
 

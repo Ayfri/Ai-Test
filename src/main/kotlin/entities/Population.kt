@@ -4,18 +4,28 @@ import fastRandom
 
 class Population(val level: Level) {
 	val isFinished get() = players.any { it.hasReachedGoal || level.step >= level.minSteps }
-	val players = mutableListOf<Player>()
-	val populationSize = 500
+	val populationSize = 4500
+	val players = Array(populationSize) { Player() }
 	var bestPlayerIndex = 0
 	var fitnessSum = 0.0
 	var generation = 0
+		set(value) {
+			field = value
+			//		averageCollisionCalculationTime.trimToSize()
+		}
 
 	fun draw() {
-		if (!level.onlyDisplayBest) players.drop(1).forEach(Player::draw)
-		players.first().draw()
+		if (!level.onlyDisplayBest) {
+			players.drop(1).forEach(Player::draw)
+		}
+		players[0].draw()
 	}
 
-	fun update() = players.forEach { it.update(level) }
+	fun update() = players.forEach {
+//		averageCollisionCalculationTime += measureNanoTime {
+		it.update(level)
+//		}
+	}
 
 	fun calculateFitnessSum() = players.sumOf { it.fitness }.also { fitnessSum = it }
 
@@ -33,13 +43,12 @@ class Population(val level: Level) {
 
 		if (level.step < level.minSteps) level.minSteps = level.step
 
-		for (i in 1 until players.size) {
+		for (i in 1..<players.size) {
 			val parent = selectParent()
 			newPlayers += parent.createBaby()
 		}
 
-		players.clear()
-		players.addAll(newPlayers)
+		newPlayers.forEachIndexed { index, player -> players[index] = player }
 		generation++
 	}
 
@@ -54,15 +63,12 @@ class Population(val level: Level) {
 	}
 
 	fun setPlayers() {
-		players.clear()
-		for (i in 0 until populationSize) {
-			players += Player()
-		}
+		players.forEachIndexed { index, _ -> players[index] = Player() }
 	}
 
 	fun calculateFitness() = players.forEach { it.calculateFitness(level) }
 
-	fun mutatePlayers() = players.subList(1, players.size).forEach { it.brain.mutate() }
+	fun mutatePlayers() = players.drop(1).forEach { it.brain.mutate() }
 
 	fun reset() {
 		setPlayers()
