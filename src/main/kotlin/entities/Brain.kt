@@ -1,7 +1,8 @@
 package entities
 
 import fastRandom
-import fastRandomVec
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 class Brain(steps: Int = STARTING_STEPS) {
@@ -21,7 +22,12 @@ class Brain(steps: Int = STARTING_STEPS) {
 		val quantityOfMutations = (directions.size * mutationRate).toLong()
 		val indicesToChange = fastRandom.ints(0, directions.size).distinct().limit(quantityOfMutations).toArray()
 
-		indicesToChange.forEach { directions[it] = fastRandomVec() }
+		indicesToChange.forEach {
+			val angle = randomGenerator.nextFloat(0.0F, (2 * Math.PI).toFloat())
+			val rawX = ((cos(angle) + 1f) * Moves.PRECISION).toInt()
+			val rawY = ((sin(angle) + 1f) * Moves.PRECISION).toInt()
+			directions.setRaw(it, rawX, rawY)
+		}
 	}
 
 	override fun toString() = "Brain(directions=$directions)"

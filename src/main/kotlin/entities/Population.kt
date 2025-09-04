@@ -4,7 +4,7 @@ import fastRandom
 
 class Population(val level: Level) {
 	val isFinished get() = players.any { it.hasReachedGoal || level.step >= level.minSteps }
-	val populationSize = 4500
+	val populationSize = 500
 	val players = Array(populationSize) { Player() }
 	var bestPlayerIndex = 0
 	var fitnessSum = 0.0
