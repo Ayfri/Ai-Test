@@ -32,17 +32,16 @@ data class Player(
 	}
 
 	fun move(level: Level) {
-		val pVector = brain.directions[level.step]
-		velocity.x += pVector.x
-		velocity.y += pVector.y
+		val step = level.step
+		velocity.x += brain.directions.xAt(step)
+		velocity.y += brain.directions.yAt(step)
 		velocity.limit(4f)
 		pos.add(velocity)
 	}
 
 	fun move(level: Level, step: Int) {
-		val pVector = brain.directions[step]
-		velocity.x += pVector.x
-		velocity.y += pVector.y
+		velocity.x += brain.directions.xAt(step)
+		velocity.y += brain.directions.yAt(step)
 		velocity.limit(4f)
 		pos.add(velocity)
 	}
@@ -138,7 +137,6 @@ data class Player(
 
 	companion object {
 		const val RADIUS = 2f
-		const val DIAMETER = RADIUS * 2
 		val startingPoint = PVector(p.width / 2f, p.height - 10f)
 	}
 }
